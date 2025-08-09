@@ -1,0 +1,175 @@
+{% extends "index.html" %}
+{% block content %}
+    <!--<script type="text/javascript" src="http://livejs.com/live.js"></script>-->
+	<div id="predict">
+
+        <div id="predict_func">
+            <h2>Digit Recognition WebApp</h2>
+            <div>
+                <div id="paint">
+                    <canvas id="myCanvas"></canvas>
+                </div>
+                <div id="predict_toolbar">
+                    <img src="../static/icons/back.png" width="20" height="20" alt="return" /><a href="{{url_for('index_view')}}">Return</a><br/>
+                    <img src="../static/icons/restart.png" width="20" height="20" alt="return" /><button id="clear">Restart</button><br />
+                    <img src="../static/icons/workflow.png" width="20" height="20" alt="return"/><button onclick="compute()">Run</button><br />
+                    <img src="../static/icons/graph.png" width="20" height="20" alt="return"/><p>Result: <output name="result"></output></p><img id="spinner" src="../static/icons/spinner.png" />
+                </div>
+            </div>
+            <p id="hint">Draw number above then click run.</p>
+        </div>
+
+        <!-- Description -->
+        <div>
+            <div style="display: flex; justify-content: center;">
+                <div id="nn_stats">
+                    <p>Epochs: 3</p>
+                    <p>Accuracy: 0.9768</p>
+                    <p>Loss: 0.0733</p>
+                </div>
+                <div id="nn_info">
+                    <p>Model: Convolutional Neural Network</p>
+                    <p>File: mnist_handwriiten_model.keras</p>
+                    <p>Dataset: MNIST Handwritten Digits</p>
+                    <p>Training data size: 60,000</p>
+                </div>
+            </div>
+            <div id="nn_desc">
+                <p>MNIST Handwritten Digit Classification Model <br/><br/> This model is designed to recognize and classify handwritten digits (0 through 9) using the MNIST dataset, a benchmark dataset in the field of computer vision and machine learning. The MNIST dataset consists of 70,000 grayscale images of size 28x28 pixels, with 60,000 used for training and 10,000 for testing.</p>
+            </div>
+            <div id="nn_links">
+                <a href="https://www.kaggle.com/datasets/hojjatk/mnist-dataset" target="_blank" rel="noopener noreferrer">https://www.kaggle.com/datasets/hojjatk/mnist-dataset</a>
+                <a href="https://www.tensorflow.org/js/tutorials/training/handwritten_digit_cnn" target="_blank" rel="noopener noreferrer">https://www.tensorflow.org/js/tutorials/training/handwritten_digit_cnn</a>
+            </div>
+        </div>
+	</div>
+ <script>
+        var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+            $('#paint').css({'width': '60%'});
+            $('#number').css({'width': '30%', 'font-size': '240px'});
+        } else {
+            $('#paint').css({'width': '300px'});
+            $('#number').css({'width': '150px', 'font-size': '120px'});
+        }
+
+        var cw = $('#paint').width();
+        $('#paint').css({'height': cw + 'px'});
+
+        cw = $('#number').width();
+        $('#number').css({'height': cw + 'px'});
+
+        // From https://www.html5canvastutorials.com/labs/html5-canvas-paint-application/
+		// <script>
+		// window.dataLayer = window.dataLayer || [];
+		// function gtag(){dataLayer.push(arguments);}
+		// gtag('js', new Date());
+
+		// gtag('config', 'G-H0NW5Z2MYC');
+		// < /script>
+        var canvas = document.getElementById('myCanvas');
+        var context = canvas.getContext('2d');
+
+        var compuetedStyle = getComputedStyle(document.getElementById('paint'));
+        canvas.width = parseInt(compuetedStyle.getPropertyValue('width'));
+        canvas.height = parseInt(compuetedStyle.getPropertyValue('height'));
+
+        var canvas_grid;
+
+        var mouse = {x: 0, y: 0};
+
+        canvas.addEventListener('mousemove', function(e) {
+            mouse.x = e.pageX - this.offsetLeft;
+            mouse.y = e.pageY - this.offsetTop;
+        }, false);
+
+        context.lineWidth = isMobile ? 60 : 15;
+        context.lineJoin = 'round';
+        context.lineCap = 'round';
+        context.strokeStyle = '#0000FF';
+
+        canvas.addEventListener('mousedown', function(e) {
+            context.moveTo(mouse.x, mouse.y);
+            context.beginPath();
+            canvas.addEventListener('mousemove', onPaint, false);
+        }, false);
+
+        canvas.addEventListener('mouseup', function() {
+            $('#number').html('<img id="spinner" src="spinner.gif"/>');
+            canvas.removeEventListener('mousemove', onPaint, false);
+            var img = new Image();
+            img.onload = function() {
+                context.drawImage(img, 0, 0, 28, 28);
+                data = context.getImageData(0, 0, 28, 28).data;
+                var input = [];
+                for(var i = 0; i < data.length; i += 4) {
+                input.push(data[i + 2] / 255);
+                }
+                canvas_grid = input;
+            };
+            img.src = canvas.toDataURL('image/png');
+        }, false);
+
+        var onPaint = function() {
+            context.lineTo(mouse.x, mouse.y);
+            context.stroke();
+        };
+
+        // http://bencentra.com/code/2014/12/05/html5-canvas-touch-events.html
+        // Set up touch events for mobile, etc
+        canvas.addEventListener('touchstart', function (e) {
+            var touch = e.touches[0];
+            canvas.dispatchEvent(new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            }));
+            }, false);
+            canvas.addEventListener('touchend', function (e) {
+            canvas.dispatchEvent(new MouseEvent('mouseup', {}));
+            }, false);
+            canvas.addEventListener('touchmove', function (e) {
+            var touch = e.touches[0];
+            canvas.dispatchEvent(new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            }));
+        }, false);
+
+        function compute() {
+            $('#spinner').css({'width': '32px', 'height': '32px'});
+
+            console.log(canvas_grid)
+            let theGrid = [[]]
+            for (let i = 0; i < canvas_grid.length; i++) {
+                if (i % 28 == 0) {
+                    theGrid[0].push([])
+                }
+                theGrid[0][Math.floor(i/28)].push(canvas_grid[i])
+            }
+            console.log(theGrid)
+            
+            $.ajax({
+                url: '/classify',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ theGrid }),
+                success: function(response) {
+                    console.log(response.result);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            }).done(data => {
+                console.log(data);
+                $('#spinner').css({'width': '0x', 'height': '0px'});
+                $('output[name="result"]').html(data.prob);
+            });
+        }
+
+        $('#clear').click(function(){
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            $('#number').html('');
+            $('output[name="result"]').html('')
+        });
+  </script>
+{% endblock %}

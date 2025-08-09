@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Simple Machine Learning Model into an WebApp using TensorFlow.js">
+    <meta name="keywords" content="Machine Learning, TensorFlow.js">
+    <meta name="author" content="Tarikh Mukhtar">
+    <link rel="stylesheet" href="/static/index.css">
+    <link rel="stylesheet" href="/static/predict.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.5.2/dist/tf.min.js"></script>
+    <title>Neural Network</title>
+</head>
+<body>
+    <div id="header">
+		<div>
+			<a href="{{url_for('index_view')}}" id="home_nav"><img src="../static/icons/home.png" width="32" height="32" alt="home_nav_button" /></a>
+			<h2>Neural Network Classification WebApp</h2>
+		</div>
+		<a href="https://github.com/tarikh-cell/Neural-Network-WebApp" target="_blank" rel="noopener noreferrer" id="git_nav"><img src="../static/icons/github.png" width="32" height="32" alt="github_nav_button" /></a>
+	</div>
+    {% block content %}
+    {% endblock %}
+</body>    
+</html>
