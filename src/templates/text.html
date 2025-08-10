@@ -1,0 +1,71 @@
+{% extends "index.html" %}
+{% block content %}
+    <!--<script type="text/javascript" src="http://livejs.com/live.js"></script>-->
+	<div id="predict">
+        <div id="predict_func">
+            <h2>Sentiment Analysis WebApp</h2>
+            <div>
+                <textarea type="text" id="text"></textarea>
+
+                <div id="predict_toolbar">
+                    <img src="../static/icons/back.png" width="20" height="20" alt="return" /><a href="{{url_for('index_view')}}">Return</a><br/>
+                    <img src="../static/icons/restart.png" width="20" height="20" alt="return" /><button id="clear">Restart</button><br />
+                    <img src="../static/icons/workflow.png" width="20" height="20" alt="return"/><button onclick="compute()">Run</button><br />
+                    <img src="../static/icons/graph.png" width="20" height="20" alt="return"/><p>Result: <output name="result"></output></p><img id="spinner" src="../static/icons/spinner.png" />
+                </div>
+            </div>
+            <p id="hint">Enter text then click run.</p>
+        </div>
+
+         <!-- Description -->
+        <div>
+            <div style="display: flex; justify-content: center;">
+                <div id="nn_stats">
+                    <p>Epochs: 10</p>
+                    <p>Accuracy: 0.9127</p>
+                    <p>Loss: 0.2332</p>
+                </div>
+                <div id="nn_info">
+                    <p>Model: Sentiment Analysis</p>
+                    <p>File: sentiment_analysis.keras</p>
+                    <p>Dataset: IMDB Review Dataset</p>
+                    <p>Training data size: 50,000</p>
+                </div>
+            </div>
+            <div id="nn_desc">
+                <p>MNIST Sentiment Analysis Model <br/><br/> This model is designed to perform sentiment analysis on movie reviews using the IMDb dataset, a popular benchmark in natural language processing. The IMDb dataset consists of 50,000 movie reviews labelled as either positive or negative, with 25,000 reviews used for training and 25,000 for testing. The goal of the model is to accurately classify the sentiment expressed in each review.</p>
+            </div>
+            <div id="nn_links">
+                <a href="https://www.tensorflow.org/tutorials/keras/text_classification" target="_blank" rel="noopener noreferrer">https://www.tensorflow.org/tutorials/keras/text_classification</a>
+                <a href="https://www.kaggle.com/datasets/abhi8923shriv/sentiment-analysis-dataset" target="_blank" rel="noopener noreferrer">https://www.kaggle.com/datasets/abhi8923shriv/sentiment-analysis-dataset</a>
+            </div>
+        </div>
+	</div>
+ <script>
+        function compute() {
+            $('#spinner').css({'width': '32px', 'height': '32px'});
+            var text = document.getElementById("text").value;
+            $.ajax({
+                url: '/sentiment',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ text }),
+                success: function(response) {
+                    console.log(response.result);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            }).done(data => {
+                console.log(data);
+                $('output[name="result"]').html(data.prob_sa);
+                $('#spinner').css({'width': '0x', 'height': '0px'});
+            });
+        }
+
+        $('#clear').click(function(){
+            $('#text').val('');
+            $('output[name="result"]').html('')
+        });
+  </script>
+{% endblock %}

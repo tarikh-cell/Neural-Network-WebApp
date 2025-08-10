@@ -1,0 +1,84 @@
+{% extends "index.html" %}
+{% block content %}
+    <!--<script type="text/javascript" src="http://livejs.com/live.js"></script>-->
+	<div id="predict">
+
+        <div id="predict_func">
+            <h2>Fashion Clothing Identification WebApp</h2>
+            <div>
+                <div id="clothes">
+                    <button onclick="select_pic('top')"><img src="../static/images/top.png" width="36" height="36" alt="top" /></button>
+                    <button onclick="select_pic('ankle_boot')"><img src="../static/images/ankle_boot.png" width="36" height="36" alt="ankle_boot" /></button>
+                    <button onclick="select_pic('bag')"><img src="../static/images/bag.png" width="36" height="36" alt="bag" /></button>
+                    <button onclick="select_pic('dress')"><img src="../static/images/dress.png" width="36" height="36" alt="dress" /></button>
+                    <button onclick="select_pic('sandal')"><img src="../static/images/sandal.png" width="36" height="36" alt="sandal" /></button>
+                    <button onclick="select_pic('trouser')"><img src="../static/images/trouser.png" width="36" height="36" alt="trouser" /></button>
+                    <button onclick="select_pic('tshirt')"><img src="../static/images/tshirt.png" width="36" height="36" alt="tshirt" /></button>
+                    <button onclick="select_pic('coat')"><img src="../static/images/coat.png" width="36" height="36" alt="coat" /></button>
+                    <button onclick="select_pic('sneaker')"><img src="../static/images/sneaker.png" width="36" height="36" alt="sneaker" /></button>
+                    <button onclick="select_pic('pullover')"><img src="../static/images/pullover.png" width="36" height="36" alt="pullover" /></button>
+                </div>
+                <div id="predict_toolbar">
+                    <img src="../static/icons/back.png" width="20" height="20" alt="return" /><a href="{{url_for('index_view')}}">Return</a><br/>
+                    <img src="../static/icons/restart.png" width="20" height="20" alt="return" /><button id="clear">Restart</button><br />
+                    <img src="../static/icons/workflow.png" width="20" height="20" alt="return"/><button onclick="compute()">Run</button><br />
+                    <img src="../static/icons/graph.png" width="20" height="20" alt="return"/><p>Result: <output name="result"></output></p><img id="spinner" src="../static/icons/spinner.png" />
+                </div>
+            </div>
+            <p id="hint">Select clothing item then click run.</p>
+        </div>
+
+        <!-- Description -->
+        <div>
+            <div style="display: flex; justify-content: center;">
+                <div id="nn_stats">
+                    <p>Epochs: 10</p>
+                    <p>Accuracy: 0.9768</p>
+                    <p>Loss: 0.0733</p>
+                </div>
+                <div id="nn_info">
+                    <p>Model: Convolutional Neural Network</p>
+                    <p>File: mnist_fashion_clothing_model.keras</p>
+                    <p>Dataset: MNIST Fashion Clothing</p>
+                    <p>Training data size: 60,000</p>
+                </div>
+            </div>
+            <div id="nn_desc">
+                <p>MNIST Fashion Clothing Classification Model <br/><br/> This model is designed to recognize and classify various types of clothing items using the Fashion-MNIST dataset, a widely used benchmark in computer vision and machine learning. The Fashion-MNIST dataset consists of 70,000 grayscale images of size 28x28 pixels, with 60,000 used for training and 10,000 for testing. Each image represents one of 10 different clothing categories, such as t-shirts, trousers, dresses, and sneakers.</p>
+            </div>
+            <div id="nn_links">
+                <a href="https://www.tensorflow.org/tutorials/keras/classification" target="_blank" rel="noopener noreferrer">https://www.tensorflow.org/tutorials/keras/classification</a>
+                <a href="https://www.kaggle.com/datasets/zalando-research/fashionmnist" target="_blank" rel="noopener noreferrer">https://www.kaggle.com/datasets/zalando-research/fashionmnist</a>
+            </div>
+        </div>
+	</div>
+ <script>
+        var selected_pic;
+        function compute() {
+            $.ajax({
+                url: '/image',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(selected_pic),
+                success: function(response) {
+                    console.log(response.result);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            }).done(data => {
+                console.log(data);
+                $('output[name="result"]').html(data.prob_im);
+            });
+        }
+
+        function select_pic(name){
+            selected_pic = name;
+        }
+
+        $('#clear').click(function(){
+            selected_pic = ''
+            $('output[name="result"]').html('')
+        });
+  </script>
+{% endblock %}

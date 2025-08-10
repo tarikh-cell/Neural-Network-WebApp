@@ -1,0 +1,167 @@
+body {
+    touch-action: none; /*https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action*/
+}
+#predict {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+#predict_func > div {
+    display: flex;
+}
+#predict_func > h2 {
+    font-family: 'Raleway';
+    margin: 50px 0;
+    font-size: 40px;
+    text-align: center;
+}
+#predict_toolbar > img {
+    vertical-align:bottom
+}
+#predict_toolbar > button, a, p {
+    display: inline-block;
+    font-family: 'Raleway';
+    font-size: 16px;
+    margin: 1vh 0 0 5px;
+    padding: 0;
+    background-color: transparent;
+    color: black;
+    text-decoration: none;
+    border: none;
+}
+#hint {
+    border-radius: 20rem;
+    margin: 1vw;
+    padding: .75vw;
+    background-color: hsl(210 40% 98);
+    /* box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px; */
+}
+
+/* Handwritten Digit */
+#paint {
+    height: 300px;
+    width: 300px;
+    padding: 2vw;
+    margin-right: 1vw;
+    border-radius: 8px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+#predicted { 
+    font-size: 60px;
+    margin-top: 60px;
+    text-align: center;
+}
+#number {
+    border: 3px solid black;
+    margin: auto;
+    margin-top: 30px;
+    text-align: center;
+    vertical-align: middle;
+}
+#predict > div > button {
+    font-family: 'Montserrat';
+    color: hsl(210 40% 98%);
+    border-radius: 8px;
+    font-size: 16px;
+    padding: .75vw 1.5vh;
+    background-color: hsl(222.2 47.4% 11.2%);
+}
+
+#spinner {
+    width: 0;
+    height: 0;
+    animation: spin 2s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Sentiment Analysis */
+#text {
+    height: 300px;
+    width: 300px;
+    padding: 2vw;
+    margin-right: 1vw;
+    border-radius: 8px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+/* Image Identification */
+#clothes {
+    height: 300px;
+    width: 300px;
+    padding: 2vw;
+    margin-right: 1vw;
+    border-radius: 8px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+#clothes > button {
+    margin: 10px;
+    border: none;
+    background-color: transparent;
+}
+#clothes > button:hover {
+    transform: scale(1.2);
+}
+
+/* Description Pannel */
+#nn_stats, #nn_info, #nn_desc {
+    display: flex;
+    flex-direction: column;
+    margin: 2.5vw;
+    padding: 2vw;
+    background-color: hsl(210 40% 98);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+#nn_desc {
+    width: 30vw;
+}
+#nn_links {
+    display: flex;
+    flex-direction: column;
+}
+#nn_links > a {
+    align-self: center;
+    border-radius: 20rem;
+    margin: .5vw;
+    padding: 1vw;
+    background-color: hsl(210 40% 98);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+/* Responsive Layout */
+@media screen and (max-width: 1000px) {
+    #predict {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #predict_func > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #predict > div {
+        justify-content: center;
+        align-items: center;
+    }
+
+    #hint {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #nn_desc {
+        justify-self: center;
+        width: 70%;
+    }
+
+    #desc_card {
+        width: 50%;
+    }
+}

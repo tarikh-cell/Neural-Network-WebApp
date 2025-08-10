@@ -1,0 +1,45 @@
+{% extends "index.html" %}
+{% block content %}
+    <div id="app">
+        <div style="display: flex;">
+            <div v-for="info in my_app" id="card">
+                <div>
+                    <h2>[[ info.title ]]</h2>
+                    <p>[[ info.sub_title ]]</p>
+                </div>
+                <img v-bind:src="info.img_name" style="width: 100%; height: 60%; object-fit: contain;" alt="nn_diagram" />
+                <a v-bind:href="info.url_route" id="card-button">[[ info.btn_name ]]<div></div></a>
+            </div>
+        </div>
+        <div id="description">
+            <div v-for="desc in desc_arr" id="desc_card">
+                <div style="display: flex;">
+                    <h2>[[ desc.title ]]</h2>
+                    <img v-bind:src="desc.img_name" width="36" height="36" style="padding: 1.5vh 0 0 .5vw;" alt="build type" />
+                </div>
+                <p>[[ desc.text ]]</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const app = Vue.createApp({
+            delimiters : ['[[', ']]'],
+            data() {
+                return {
+                    my_app : [
+                        {title: "Classify Digit", sub_title: "Handwritten digit classification", img_name: "../static/images/nn_example.png", btn_name: "Classify", url_route: "{{url_for('predict')}}"},
+                        {title: "Classify Statement", sub_title: "Sentiment analysis classification", img_name: "../static/images/sa_example2.png", btn_name: "Classify", url_route: "{{url_for('text')}}"},
+                        {title: "Classify Clothes", sub_title: "Clothing Item classification", img_name: "../static/images/nn_diagram.png", btn_name: "Classify", url_route: "{{url_for('clothes')}}"}
+                    ],
+                    desc_arr : [
+                        {title: "Build", text: "Built using Vue.js, JQuery and Flask.", img_name: "../static/icons/build.png"},
+                        {title: "Networks", text: "Sentiment analysis, Convolutional Neural Network's.", img_name: "../static/icons/networks.png"},
+                        {title: "Libraries", text: "Built using Tensor Flow, Pytorch and Keras.", img_name: "../static/icons/libraries.png"},
+                        {title: "Datasets", text: "Trained using IMDB review dataset, MNIST Fashion and hand written digit dataset.", img_name: "../static/icons/dataset.png"}
+                    ]
+                }
+            }
+        })
+        app.mount('#app')
+    </script>
+{% endblock %}
